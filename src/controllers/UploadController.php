@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 
@@ -48,10 +49,16 @@ class UploadController extends Controller {
             exit;
         }
 
-
         if (Session::get('lfm_type') == "Images")
         {
             $file = Input::file('file_to_upload');
+
+            $validator = Validator::make(['image' => $file], ['image' => 'image']);
+            if ($validator->fails())
+            {
+                return 'A file is not an image';
+            }
+
             $working_dir = Input::get('working_dir');
             $destinationPath = base_path() . "/" . $this->file_location;
 
